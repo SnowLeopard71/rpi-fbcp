@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <linux/fb.h>
 #include <sys/mman.h>
+#include <unistd.h>
 
 #include <bcm_host.h>
 
@@ -87,6 +88,11 @@ int process() {
 int main(int argc, char **argv) {
     setlogmask(LOG_UPTO(LOG_DEBUG));
     openlog("fbcp", LOG_NDELAY | LOG_PID, LOG_USER);
+
+    if (daemon(1,0) != 0) {
+        syslog(LOG_ERR, "Failed to go into background.");
+        exit(errno);
+        }
 
     return process();
 }
